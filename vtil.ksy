@@ -19,9 +19,7 @@ types:
     seq:
       - id: flags
         type: u4
-      - id: local_id
-        type: u8
-      - id: architecture
+      - id: combined_id
         type: u8
       - id: bit_count
         type: s4
@@ -30,9 +28,7 @@ types:
   header:
     seq:
       - id: magic1
-        type: str
-        size: 4
-        encoding: UTF-8
+        type: u4
       - id: arch_id
         type: u1
         enum: architecture_identifier
