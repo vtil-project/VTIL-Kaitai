@@ -8,12 +8,12 @@ enums:
     1: arm64
     2: virtual
 seq:
-- id: header
-  type: header
-- id: entry_point
-  type: entry_point
-- id: routine_convention
-  type: routine_convention
+  - id: header
+    type: header
+  - id: entry_point
+    type: entry_point
+  - id: routine_convention
+    type: routine_convention
 types:
   register_desc:
     seq:
