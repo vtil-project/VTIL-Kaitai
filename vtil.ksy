@@ -18,7 +18,7 @@ types:
   register_desc:
     seq:
       - id: flags
-        type: u4
+        type: u8
       - id: combined_id
         type: u8
       - id: bit_count
