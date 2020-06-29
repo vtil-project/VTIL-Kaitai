@@ -14,6 +14,10 @@ seq:
     type: entry_point
   - id: routine_convention
     type: routine_convention
+  - id: subroutine_convention
+    type: subroutine_convention
+  - id: spec_subroutine_conventions
+    type: spec_subroutine_conventions
 types:
   register_desc:
     seq:
@@ -25,6 +29,34 @@ types:
         type: s4
       - id: bit_offset
         type: s4
+  spec_subroutine_convention:
+    seq:
+      - id: vip
+        type: u8
+      - id: volatile_registers_count
+        type: u4
+      - id: volatile_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: volatile_registers_count
+      - id: param_registers_count
+        type: u4
+      - id: param_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: param_registers_count
+      - id: retval_registers_count
+        type: u4
+      - id: retval_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: retval_registers_count
+      - id: frame_register
+        type: register_desc
+      - id: shadow_space
+        type: u8
+      - id: purge_stack
+        type: u1 # or use b1 but needs b7 pad
   header:
     seq:
       - id: magic1
@@ -66,3 +98,37 @@ types:
         type: u8
       - id: purge_stack
         type: u1 # or use b1 but needs b7 pad
+  subroutine_convention:
+    seq:
+      - id: volatile_registers_count
+        type: u4
+      - id: volatile_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: volatile_registers_count
+      - id: param_registers_count
+        type: u4
+      - id: param_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: param_registers_count
+      - id: retval_registers_count
+        type: u4
+      - id: retval_registers
+        type: register_desc
+        repeat: expr
+        repeat-expr: retval_registers_count
+      - id: frame_register
+        type: register_desc
+      - id: shadow_space
+        type: u8
+      - id: purge_stack
+        type: u1 # or use b1 but needs b7 pad
+  spec_subroutine_conventions:
+    seq:
+      - id: spec_subroutine_conventions_amount
+        type: u4
+      - id: spec_subroutine_convention
+        type: subroutine_convention
+        repeat: expr
+        repeat-expr: spec_subroutine_conventions_amount
