@@ -65,4 +65,4 @@ types:
       - id: shadow_space
         type: u8
       - id: purge_stack
-        type: b1
+        type: u1 # or use b1 but needs b7 pad
