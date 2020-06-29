@@ -77,6 +77,7 @@ types:
         type: instruction
         repeat: expr
         repeat-expr: instruction_amount
+      # TODO: VIP entry stuff
   spec_subroutine_convention:
     seq:
       - id: vip
