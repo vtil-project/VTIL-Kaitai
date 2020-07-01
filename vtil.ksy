@@ -31,6 +31,12 @@ types:
         type: s4
       - id: bit_offset
         type: s4
+  immediate_desc:
+    seq:
+      - id: imm
+        type: u8
+      - id: bitcount
+        type: u4
   operand:
     seq:
       - id: sp_index
@@ -39,13 +45,15 @@ types:
         type:
           switch-on: sp_index
           cases:
-            0: u8 # imm
-            1: register_desc # reg
+            0: immediate_desc
+            1: register_desc
   instruction:
     seq:
+      - id: name_len
+        type: u4
       - id: name
         type: str
-        terminator: 0
+        size: name_len
         encoding: UTF-8
       - id: operands_amount
         type: u4
@@ -58,7 +66,7 @@ types:
       - id: sp_offset
         type: s8
       - id: sp_index
-        type: u8
+        type: u4
       - id: sp_reset
         type: u1
   basic_block:
@@ -68,16 +76,27 @@ types:
       - id: sp_offset
         type: s8
       - id: sp_index
-        type: u8
+        type: u4
       - id: last_temporary_index
-        type: u8
+        type: u4
       - id: instruction_amount
         type: u4
       - id: instructions
         type: instruction
         repeat: expr
         repeat-expr: instruction_amount
-      # TODO: VIP entry stuff
+      - id: prev_vip_amount
+        type: u4
+      - id: prev_vip
+        type: u8
+        repeat: expr
+        repeat-expr: prev_vip_amount
+      - id: next_vip_amount
+        type: u4
+      - id: next_vip
+        type: u8
+        repeat: expr
+        repeat-expr: next_vip_amount
   spec_subroutine_convention:
     seq:
       - id: vip
