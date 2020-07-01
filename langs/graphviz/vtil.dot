@@ -1,0 +1,239 @@
+digraph {
+	rankdir=LR;
+	node [shape=plaintext];
+	subgraph cluster__vtil {
+		label="Vtil";
+		graph[style=dotted];
+
+		vtil__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+			<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+			<TR><TD PORT="header_pos">0</TD><TD PORT="header_size">8</TD><TD>Header</TD><TD PORT="header_type">header</TD></TR>
+			<TR><TD PORT="entry_point_pos">8</TD><TD PORT="entry_point_size">8</TD><TD>EntryPoint</TD><TD PORT="entry_point_type">entry_point</TD></TR>
+			<TR><TD PORT="routine_convention_pos">16</TD><TD PORT="routine_convention_size">...</TD><TD>RoutineConvention</TD><TD PORT="routine_convention_type">routine_convention</TD></TR>
+			<TR><TD PORT="subroutine_convention_pos">...</TD><TD PORT="subroutine_convention_size">...</TD><TD>SubroutineConvention</TD><TD PORT="subroutine_convention_type">subroutine_convention</TD></TR>
+			<TR><TD PORT="spec_subroutine_conventions_pos">...</TD><TD PORT="spec_subroutine_conventions_size">...</TD><TD>SpecSubroutineConventions</TD><TD PORT="spec_subroutine_conventions_type">spec_subroutine_conventions</TD></TR>
+			<TR><TD PORT="explored_blocks_pos">...</TD><TD PORT="explored_blocks_size">...</TD><TD>ExploredBlocks</TD><TD PORT="explored_blocks_type">explored_blocks</TD></TR>
+		</TABLE>>];
+		subgraph cluster__subroutine_convention {
+			label="Vtil::SubroutineConvention";
+			graph[style=dotted];
+
+			subroutine_convention__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="volatile_registers_count_pos">0</TD><TD PORT="volatile_registers_count_size">4</TD><TD>u4le</TD><TD PORT="volatile_registers_count_type">volatile_registers_count</TD></TR>
+				<TR><TD PORT="volatile_registers_pos">4</TD><TD PORT="volatile_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="volatile_registers_type">volatile_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="volatile_registers__repeat">repeat volatile_registers_count times</TD></TR>
+				<TR><TD PORT="param_registers_count_pos">...</TD><TD PORT="param_registers_count_size">4</TD><TD>u4le</TD><TD PORT="param_registers_count_type">param_registers_count</TD></TR>
+				<TR><TD PORT="param_registers_pos">...</TD><TD PORT="param_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="param_registers_type">param_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="param_registers__repeat">repeat param_registers_count times</TD></TR>
+				<TR><TD PORT="retval_registers_count_pos">...</TD><TD PORT="retval_registers_count_size">4</TD><TD>u4le</TD><TD PORT="retval_registers_count_type">retval_registers_count</TD></TR>
+				<TR><TD PORT="retval_registers_pos">...</TD><TD PORT="retval_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="retval_registers_type">retval_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="retval_registers__repeat">repeat retval_registers_count times</TD></TR>
+				<TR><TD PORT="frame_register_pos">...</TD><TD PORT="frame_register_size">24</TD><TD>RegisterDesc</TD><TD PORT="frame_register_type">frame_register</TD></TR>
+				<TR><TD PORT="shadow_space_pos">...</TD><TD PORT="shadow_space_size">8</TD><TD>u8le</TD><TD PORT="shadow_space_type">shadow_space</TD></TR>
+				<TR><TD PORT="purge_stack_pos">...</TD><TD PORT="purge_stack_size">1</TD><TD>u1</TD><TD PORT="purge_stack_type">purge_stack</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__operand {
+			label="Vtil::Operand";
+			graph[style=dotted];
+
+			operand__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="sp_index_pos">0</TD><TD PORT="sp_index_size">4</TD><TD>u4le</TD><TD PORT="sp_index_type">sp_index</TD></TR>
+				<TR><TD PORT="operand_pos">4</TD><TD PORT="operand_size">...</TD><TD>switch (sp_index)</TD><TD PORT="operand_type">operand</TD></TR>
+			</TABLE>>];
+operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+	<TR><TD BGCOLOR="#F0F2E4">case</TD><TD BGCOLOR="#F0F2E4">type</TD></TR>
+	<TR><TD>0</TD><TD PORT="case0">ImmediateDesc</TD></TR>
+	<TR><TD>1</TD><TD PORT="case1">RegisterDesc</TD></TR>
+</TABLE>>];
+		}
+		subgraph cluster__register_desc {
+			label="Vtil::RegisterDesc";
+			graph[style=dotted];
+
+			register_desc__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="flags_pos">0</TD><TD PORT="flags_size">8</TD><TD>u8le</TD><TD PORT="flags_type">flags</TD></TR>
+				<TR><TD PORT="combined_id_pos">8</TD><TD PORT="combined_id_size">8</TD><TD>u8le</TD><TD PORT="combined_id_type">combined_id</TD></TR>
+				<TR><TD PORT="bit_count_pos">16</TD><TD PORT="bit_count_size">4</TD><TD>s4le</TD><TD PORT="bit_count_type">bit_count</TD></TR>
+				<TR><TD PORT="bit_offset_pos">20</TD><TD PORT="bit_offset_size">4</TD><TD>s4le</TD><TD PORT="bit_offset_type">bit_offset</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__routine_convention {
+			label="Vtil::RoutineConvention";
+			graph[style=dotted];
+
+			routine_convention__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="volatile_registers_count_pos">0</TD><TD PORT="volatile_registers_count_size">4</TD><TD>u4le</TD><TD PORT="volatile_registers_count_type">volatile_registers_count</TD></TR>
+				<TR><TD PORT="volatile_registers_pos">4</TD><TD PORT="volatile_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="volatile_registers_type">volatile_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="volatile_registers__repeat">repeat volatile_registers_count times</TD></TR>
+				<TR><TD PORT="param_registers_count_pos">...</TD><TD PORT="param_registers_count_size">4</TD><TD>u4le</TD><TD PORT="param_registers_count_type">param_registers_count</TD></TR>
+				<TR><TD PORT="param_registers_pos">...</TD><TD PORT="param_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="param_registers_type">param_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="param_registers__repeat">repeat param_registers_count times</TD></TR>
+				<TR><TD PORT="retval_registers_count_pos">...</TD><TD PORT="retval_registers_count_size">4</TD><TD>u4le</TD><TD PORT="retval_registers_count_type">retval_registers_count</TD></TR>
+				<TR><TD PORT="retval_registers_pos">...</TD><TD PORT="retval_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="retval_registers_type">retval_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="retval_registers__repeat">repeat retval_registers_count times</TD></TR>
+				<TR><TD PORT="frame_register_pos">...</TD><TD PORT="frame_register_size">24</TD><TD>RegisterDesc</TD><TD PORT="frame_register_type">frame_register</TD></TR>
+				<TR><TD PORT="shadow_space_pos">...</TD><TD PORT="shadow_space_size">8</TD><TD>u8le</TD><TD PORT="shadow_space_type">shadow_space</TD></TR>
+				<TR><TD PORT="purge_stack_pos">...</TD><TD PORT="purge_stack_size">1</TD><TD>u1</TD><TD PORT="purge_stack_type">purge_stack</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__instruction {
+			label="Vtil::Instruction";
+			graph[style=dotted];
+
+			instruction__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="name_len_pos">0</TD><TD PORT="name_len_size">4</TD><TD>u4le</TD><TD PORT="name_len_type">name_len</TD></TR>
+				<TR><TD PORT="name_pos">4</TD><TD PORT="name_size">name_len</TD><TD>str(UTF-8)</TD><TD PORT="name_type">name</TD></TR>
+				<TR><TD PORT="operands_amount_pos">...</TD><TD PORT="operands_amount_size">4</TD><TD>u4le</TD><TD PORT="operands_amount_type">operands_amount</TD></TR>
+				<TR><TD PORT="operands_pos">...</TD><TD PORT="operands_size">...</TD><TD>Operand</TD><TD PORT="operands_type">operands</TD></TR>
+				<TR><TD COLSPAN="4" PORT="operands__repeat">repeat operands_amount times</TD></TR>
+				<TR><TD PORT="vip_pos">...</TD><TD PORT="vip_size">8</TD><TD>u8le</TD><TD PORT="vip_type">vip</TD></TR>
+				<TR><TD PORT="sp_offset_pos">...</TD><TD PORT="sp_offset_size">8</TD><TD>s8le</TD><TD PORT="sp_offset_type">sp_offset</TD></TR>
+				<TR><TD PORT="sp_index_pos">...</TD><TD PORT="sp_index_size">4</TD><TD>u4le</TD><TD PORT="sp_index_type">sp_index</TD></TR>
+				<TR><TD PORT="sp_reset_pos">...</TD><TD PORT="sp_reset_size">1</TD><TD>u1</TD><TD PORT="sp_reset_type">sp_reset</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__immediate_desc {
+			label="Vtil::ImmediateDesc";
+			graph[style=dotted];
+
+			immediate_desc__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="imm_pos">0</TD><TD PORT="imm_size">8</TD><TD>u8le</TD><TD PORT="imm_type">imm</TD></TR>
+				<TR><TD PORT="bitcount_pos">8</TD><TD PORT="bitcount_size">4</TD><TD>u4le</TD><TD PORT="bitcount_type">bitcount</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__explored_blocks {
+			label="Vtil::ExploredBlocks";
+			graph[style=dotted];
+
+			explored_blocks__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="explored_blocks_amount_pos">0</TD><TD PORT="explored_blocks_amount_size">4</TD><TD>u4le</TD><TD PORT="explored_blocks_amount_type">explored_blocks_amount</TD></TR>
+				<TR><TD PORT="explored_block_pos">4</TD><TD PORT="explored_block_size">...</TD><TD>BasicBlock</TD><TD PORT="explored_block_type">explored_block</TD></TR>
+				<TR><TD COLSPAN="4" PORT="explored_block__repeat">repeat explored_blocks_amount times</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__spec_subroutine_conventions {
+			label="Vtil::SpecSubroutineConventions";
+			graph[style=dotted];
+
+			spec_subroutine_conventions__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="spec_subroutine_conventions_amount_pos">0</TD><TD PORT="spec_subroutine_conventions_amount_size">4</TD><TD>u4le</TD><TD PORT="spec_subroutine_conventions_amount_type">spec_subroutine_conventions_amount</TD></TR>
+				<TR><TD PORT="spec_subroutine_convention_pos">4</TD><TD PORT="spec_subroutine_convention_size">...</TD><TD>SubroutineConvention</TD><TD PORT="spec_subroutine_convention_type">spec_subroutine_convention</TD></TR>
+				<TR><TD COLSPAN="4" PORT="spec_subroutine_convention__repeat">repeat spec_subroutine_conventions_amount times</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__spec_subroutine_convention {
+			label="Vtil::SpecSubroutineConvention";
+			graph[style=dotted];
+
+			spec_subroutine_convention__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="vip_pos">0</TD><TD PORT="vip_size">8</TD><TD>u8le</TD><TD PORT="vip_type">vip</TD></TR>
+				<TR><TD PORT="volatile_registers_count_pos">8</TD><TD PORT="volatile_registers_count_size">4</TD><TD>u4le</TD><TD PORT="volatile_registers_count_type">volatile_registers_count</TD></TR>
+				<TR><TD PORT="volatile_registers_pos">12</TD><TD PORT="volatile_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="volatile_registers_type">volatile_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="volatile_registers__repeat">repeat volatile_registers_count times</TD></TR>
+				<TR><TD PORT="param_registers_count_pos">...</TD><TD PORT="param_registers_count_size">4</TD><TD>u4le</TD><TD PORT="param_registers_count_type">param_registers_count</TD></TR>
+				<TR><TD PORT="param_registers_pos">...</TD><TD PORT="param_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="param_registers_type">param_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="param_registers__repeat">repeat param_registers_count times</TD></TR>
+				<TR><TD PORT="retval_registers_count_pos">...</TD><TD PORT="retval_registers_count_size">4</TD><TD>u4le</TD><TD PORT="retval_registers_count_type">retval_registers_count</TD></TR>
+				<TR><TD PORT="retval_registers_pos">...</TD><TD PORT="retval_registers_size">24</TD><TD>RegisterDesc</TD><TD PORT="retval_registers_type">retval_registers</TD></TR>
+				<TR><TD COLSPAN="4" PORT="retval_registers__repeat">repeat retval_registers_count times</TD></TR>
+				<TR><TD PORT="frame_register_pos">...</TD><TD PORT="frame_register_size">24</TD><TD>RegisterDesc</TD><TD PORT="frame_register_type">frame_register</TD></TR>
+				<TR><TD PORT="shadow_space_pos">...</TD><TD PORT="shadow_space_size">8</TD><TD>u8le</TD><TD PORT="shadow_space_type">shadow_space</TD></TR>
+				<TR><TD PORT="purge_stack_pos">...</TD><TD PORT="purge_stack_size">1</TD><TD>u1</TD><TD PORT="purge_stack_type">purge_stack</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__basic_block {
+			label="Vtil::BasicBlock";
+			graph[style=dotted];
+
+			basic_block__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="entry_vip_pos">0</TD><TD PORT="entry_vip_size">8</TD><TD>u8le</TD><TD PORT="entry_vip_type">entry_vip</TD></TR>
+				<TR><TD PORT="sp_offset_pos">8</TD><TD PORT="sp_offset_size">8</TD><TD>s8le</TD><TD PORT="sp_offset_type">sp_offset</TD></TR>
+				<TR><TD PORT="sp_index_pos">16</TD><TD PORT="sp_index_size">4</TD><TD>u4le</TD><TD PORT="sp_index_type">sp_index</TD></TR>
+				<TR><TD PORT="last_temporary_index_pos">20</TD><TD PORT="last_temporary_index_size">4</TD><TD>u4le</TD><TD PORT="last_temporary_index_type">last_temporary_index</TD></TR>
+				<TR><TD PORT="instruction_amount_pos">24</TD><TD PORT="instruction_amount_size">4</TD><TD>u4le</TD><TD PORT="instruction_amount_type">instruction_amount</TD></TR>
+				<TR><TD PORT="instructions_pos">28</TD><TD PORT="instructions_size">...</TD><TD>Instruction</TD><TD PORT="instructions_type">instructions</TD></TR>
+				<TR><TD COLSPAN="4" PORT="instructions__repeat">repeat instruction_amount times</TD></TR>
+				<TR><TD PORT="prev_vip_amount_pos">...</TD><TD PORT="prev_vip_amount_size">4</TD><TD>u4le</TD><TD PORT="prev_vip_amount_type">prev_vip_amount</TD></TR>
+				<TR><TD PORT="prev_vip_pos">...</TD><TD PORT="prev_vip_size">8</TD><TD>u8le</TD><TD PORT="prev_vip_type">prev_vip</TD></TR>
+				<TR><TD COLSPAN="4" PORT="prev_vip__repeat">repeat prev_vip_amount times</TD></TR>
+				<TR><TD PORT="next_vip_amount_pos">...</TD><TD PORT="next_vip_amount_size">4</TD><TD>u4le</TD><TD PORT="next_vip_amount_type">next_vip_amount</TD></TR>
+				<TR><TD PORT="next_vip_pos">...</TD><TD PORT="next_vip_size">8</TD><TD>u8le</TD><TD PORT="next_vip_type">next_vip</TD></TR>
+				<TR><TD COLSPAN="4" PORT="next_vip__repeat">repeat next_vip_amount times</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__entry_point {
+			label="Vtil::EntryPoint";
+			graph[style=dotted];
+
+			entry_point__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="entry_vip_pos">0</TD><TD PORT="entry_vip_size">8</TD><TD>u8le</TD><TD PORT="entry_vip_type">entry_vip</TD></TR>
+			</TABLE>>];
+		}
+		subgraph cluster__header {
+			label="Vtil::Header";
+			graph[style=dotted];
+
+			header__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="magic1_pos">0</TD><TD PORT="magic1_size">4</TD><TD>u4le</TD><TD PORT="magic1_type">magic1</TD></TR>
+				<TR><TD PORT="arch_id_pos">4</TD><TD PORT="arch_id_size">1</TD><TD>u1?ArchitectureIdentifier</TD><TD PORT="arch_id_type">arch_id</TD></TR>
+				<TR><TD PORT="zero_pad_pos">5</TD><TD PORT="zero_pad_size">1</TD><TD>u1</TD><TD PORT="zero_pad_type">zero_pad</TD></TR>
+				<TR><TD PORT="magic2_pos">6</TD><TD PORT="magic2_size">2</TD><TD>u2le</TD><TD PORT="magic2_type">magic2</TD></TR>
+			</TABLE>>];
+		}
+	}
+	vtil__seq:header_type -> header__seq [style=bold];
+	vtil__seq:entry_point_type -> entry_point__seq [style=bold];
+	vtil__seq:routine_convention_type -> routine_convention__seq [style=bold];
+	vtil__seq:subroutine_convention_type -> subroutine_convention__seq [style=bold];
+	vtil__seq:spec_subroutine_conventions_type -> spec_subroutine_conventions__seq [style=bold];
+	vtil__seq:explored_blocks_type -> explored_blocks__seq [style=bold];
+	subroutine_convention__seq:volatile_registers_type -> register_desc__seq [style=bold];
+	subroutine_convention__seq:volatile_registers_count_type -> subroutine_convention__seq:volatile_registers__repeat [color="#404040"];
+	subroutine_convention__seq:param_registers_type -> register_desc__seq [style=bold];
+	subroutine_convention__seq:param_registers_count_type -> subroutine_convention__seq:param_registers__repeat [color="#404040"];
+	subroutine_convention__seq:retval_registers_type -> register_desc__seq [style=bold];
+	subroutine_convention__seq:retval_registers_count_type -> subroutine_convention__seq:retval_registers__repeat [color="#404040"];
+	subroutine_convention__seq:frame_register_type -> register_desc__seq [style=bold];
+	operand__seq:operand_type -> operand__seq_operand_switch [style=bold];
+	operand__seq_operand_switch:case0 -> immediate_desc__seq [style=bold];
+	operand__seq_operand_switch:case1 -> register_desc__seq [style=bold];
+	operand__seq:sp_index_type -> operand__seq:operand_type [color="#404040"];
+	routine_convention__seq:volatile_registers_type -> register_desc__seq [style=bold];
+	routine_convention__seq:volatile_registers_count_type -> routine_convention__seq:volatile_registers__repeat [color="#404040"];
+	routine_convention__seq:param_registers_type -> register_desc__seq [style=bold];
+	routine_convention__seq:param_registers_count_type -> routine_convention__seq:param_registers__repeat [color="#404040"];
+	routine_convention__seq:retval_registers_type -> register_desc__seq [style=bold];
+	routine_convention__seq:retval_registers_count_type -> routine_convention__seq:retval_registers__repeat [color="#404040"];
+	routine_convention__seq:frame_register_type -> register_desc__seq [style=bold];
+	instruction__seq:name_len_type -> instruction__seq:name_size [color="#404040"];
+	instruction__seq:operands_type -> operand__seq [style=bold];
+	instruction__seq:operands_amount_type -> instruction__seq:operands__repeat [color="#404040"];
+	explored_blocks__seq:explored_block_type -> basic_block__seq [style=bold];
+	explored_blocks__seq:explored_blocks_amount_type -> explored_blocks__seq:explored_block__repeat [color="#404040"];
+	spec_subroutine_conventions__seq:spec_subroutine_convention_type -> subroutine_convention__seq [style=bold];
+	spec_subroutine_conventions__seq:spec_subroutine_conventions_amount_type -> spec_subroutine_conventions__seq:spec_subroutine_convention__repeat [color="#404040"];
+	spec_subroutine_convention__seq:volatile_registers_type -> register_desc__seq [style=bold];
+	spec_subroutine_convention__seq:volatile_registers_count_type -> spec_subroutine_convention__seq:volatile_registers__repeat [color="#404040"];
+	spec_subroutine_convention__seq:param_registers_type -> register_desc__seq [style=bold];
+	spec_subroutine_convention__seq:param_registers_count_type -> spec_subroutine_convention__seq:param_registers__repeat [color="#404040"];
+	spec_subroutine_convention__seq:retval_registers_type -> register_desc__seq [style=bold];
+	spec_subroutine_convention__seq:retval_registers_count_type -> spec_subroutine_convention__seq:retval_registers__repeat [color="#404040"];
+	spec_subroutine_convention__seq:frame_register_type -> register_desc__seq [style=bold];
+	basic_block__seq:instructions_type -> instruction__seq [style=bold];
+	basic_block__seq:instruction_amount_type -> basic_block__seq:instructions__repeat [color="#404040"];
+	basic_block__seq:prev_vip_amount_type -> basic_block__seq:prev_vip__repeat [color="#404040"];
+	basic_block__seq:next_vip_amount_type -> basic_block__seq:next_vip__repeat [color="#404040"];
+}

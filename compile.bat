@@ -1,0 +1,1 @@
+kaitai-struct-compiler src/vtil.ksy -d langs/ -t all
