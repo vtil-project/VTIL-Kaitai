@@ -29,7 +29,7 @@ var Vtil = (function() {
   }
   Vtil.prototype._read = function() {
     this.header = new Header(this._io, this, this._root);
-    this.entryPoint = new EntryPoint(this._io, this, this._root);
+    this.entrypoint = new Entrypoint(this._io, this, this._root);
     this.routineConvention = new RoutineConvention(this._io, this, this._root);
     this.subroutineConvention = new SubroutineConvention(this._io, this, this._root);
     this.specSubroutineConventions = new SpecSubroutineConventions(this._io, this, this._root);
@@ -191,10 +191,10 @@ var Vtil = (function() {
       this._read();
     }
     ExploredBlocks.prototype._read = function() {
-      this.exploredBlocksAmount = this._io.readU4le();
-      this.exploredBlock = new Array(this.exploredBlocksAmount);
-      for (var i = 0; i < this.exploredBlocksAmount; i++) {
-        this.exploredBlock[i] = new BasicBlock(this._io, this, this._root);
+      this.basicBlocksAmount = this._io.readU4le();
+      this.basicBlocks = new Array(this.basicBlocksAmount);
+      for (var i = 0; i < this.basicBlocksAmount; i++) {
+        this.basicBlocks[i] = new BasicBlock(this._io, this, this._root);
       }
     }
 
@@ -253,6 +253,21 @@ var Vtil = (function() {
     return SpecSubroutineConvention;
   })();
 
+  var Entrypoint = Vtil.Entrypoint = (function() {
+    function Entrypoint(_io, _parent, _root) {
+      this._io = _io;
+      this._parent = _parent;
+      this._root = _root || this;
+
+      this._read();
+    }
+    Entrypoint.prototype._read = function() {
+      this.entryVip = this._io.readU8le();
+    }
+
+    return Entrypoint;
+  })();
+
   var BasicBlock = Vtil.BasicBlock = (function() {
     function BasicBlock(_io, _parent, _root) {
       this._io = _io;
@@ -284,21 +299,6 @@ var Vtil = (function() {
     }
 
     return BasicBlock;
-  })();
-
-  var EntryPoint = Vtil.EntryPoint = (function() {
-    function EntryPoint(_io, _parent, _root) {
-      this._io = _io;
-      this._parent = _parent;
-      this._root = _root || this;
-
-      this._read();
-    }
-    EntryPoint.prototype._read = function() {
-      this.entryVip = this._io.readU8le();
-    }
-
-    return EntryPoint;
   })();
 
   var Header = Vtil.Header = (function() {

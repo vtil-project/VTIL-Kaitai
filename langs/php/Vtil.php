@@ -9,20 +9,20 @@ class Vtil extends \Kaitai\Struct\Struct {
 
     private function _read() {
         $this->_m_header = new \Vtil\Header($this->_io, $this, $this->_root);
-        $this->_m_entryPoint = new \Vtil\EntryPoint($this->_io, $this, $this->_root);
+        $this->_m_entrypoint = new \Vtil\Entrypoint($this->_io, $this, $this->_root);
         $this->_m_routineConvention = new \Vtil\RoutineConvention($this->_io, $this, $this->_root);
         $this->_m_subroutineConvention = new \Vtil\SubroutineConvention($this->_io, $this, $this->_root);
         $this->_m_specSubroutineConventions = new \Vtil\SpecSubroutineConventions($this->_io, $this, $this->_root);
         $this->_m_exploredBlocks = new \Vtil\ExploredBlocks($this->_io, $this, $this->_root);
     }
     protected $_m_header;
-    protected $_m_entryPoint;
+    protected $_m_entrypoint;
     protected $_m_routineConvention;
     protected $_m_subroutineConvention;
     protected $_m_specSubroutineConventions;
     protected $_m_exploredBlocks;
     public function header() { return $this->_m_header; }
-    public function entryPoint() { return $this->_m_entryPoint; }
+    public function entrypoint() { return $this->_m_entrypoint; }
     public function routineConvention() { return $this->_m_routineConvention; }
     public function subroutineConvention() { return $this->_m_subroutineConvention; }
     public function specSubroutineConventions() { return $this->_m_specSubroutineConventions; }
@@ -247,17 +247,17 @@ class ExploredBlocks extends \Kaitai\Struct\Struct {
     }
 
     private function _read() {
-        $this->_m_exploredBlocksAmount = $this->_io->readU4le();
-        $this->_m_exploredBlock = [];
-        $n = $this->exploredBlocksAmount();
+        $this->_m_basicBlocksAmount = $this->_io->readU4le();
+        $this->_m_basicBlocks = [];
+        $n = $this->basicBlocksAmount();
         for ($i = 0; $i < $n; $i++) {
-            $this->_m_exploredBlock[] = new \Vtil\BasicBlock($this->_io, $this, $this->_root);
+            $this->_m_basicBlocks[] = new \Vtil\BasicBlock($this->_io, $this, $this->_root);
         }
     }
-    protected $_m_exploredBlocksAmount;
-    protected $_m_exploredBlock;
-    public function exploredBlocksAmount() { return $this->_m_exploredBlocksAmount; }
-    public function exploredBlock() { return $this->_m_exploredBlock; }
+    protected $_m_basicBlocksAmount;
+    protected $_m_basicBlocks;
+    public function basicBlocksAmount() { return $this->_m_basicBlocksAmount; }
+    public function basicBlocks() { return $this->_m_basicBlocks; }
 }
 
 namespace \Vtil;
@@ -338,6 +338,21 @@ class SpecSubroutineConvention extends \Kaitai\Struct\Struct {
 
 namespace \Vtil;
 
+class Entrypoint extends \Kaitai\Struct\Struct {
+    public function __construct(\Kaitai\Struct\Stream $_io, \Vtil $_parent = null, \Vtil $_root = null) {
+        parent::__construct($_io, $_parent, $_root);
+        $this->_read();
+    }
+
+    private function _read() {
+        $this->_m_entryVip = $this->_io->readU8le();
+    }
+    protected $_m_entryVip;
+    public function entryVip() { return $this->_m_entryVip; }
+}
+
+namespace \Vtil;
+
 class BasicBlock extends \Kaitai\Struct\Struct {
     public function __construct(\Kaitai\Struct\Stream $_io, \Vtil\ExploredBlocks $_parent = null, \Vtil $_root = null) {
         parent::__construct($_io, $_parent, $_root);
@@ -388,21 +403,6 @@ class BasicBlock extends \Kaitai\Struct\Struct {
     public function prevVip() { return $this->_m_prevVip; }
     public function nextVipAmount() { return $this->_m_nextVipAmount; }
     public function nextVip() { return $this->_m_nextVip; }
-}
-
-namespace \Vtil;
-
-class EntryPoint extends \Kaitai\Struct\Struct {
-    public function __construct(\Kaitai\Struct\Stream $_io, \Vtil $_parent = null, \Vtil $_root = null) {
-        parent::__construct($_io, $_parent, $_root);
-        $this->_read();
-    }
-
-    private function _read() {
-        $this->_m_entryVip = $this->_io->readU8le();
-    }
-    protected $_m_entryVip;
-    public function entryVip() { return $this->_m_entryVip; }
 }
 
 namespace \Vtil;

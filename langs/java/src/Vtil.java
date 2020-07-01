@@ -46,7 +46,7 @@ public class Vtil extends KaitaiStruct {
     }
     private void _read() {
         this.header = new Header(this._io, this, _root);
-        this.entryPoint = new EntryPoint(this._io, this, _root);
+        this.entrypoint = new Entrypoint(this._io, this, _root);
         this.routineConvention = new RoutineConvention(this._io, this, _root);
         this.subroutineConvention = new SubroutineConvention(this._io, this, _root);
         this.specSubroutineConventions = new SpecSubroutineConventions(this._io, this, _root);
@@ -360,18 +360,18 @@ public class Vtil extends KaitaiStruct {
             _read();
         }
         private void _read() {
-            this.exploredBlocksAmount = this._io.readU4le();
-            exploredBlock = new ArrayList<BasicBlock>((int) (exploredBlocksAmount()));
-            for (int i = 0; i < exploredBlocksAmount(); i++) {
-                this.exploredBlock.add(new BasicBlock(this._io, this, _root));
+            this.basicBlocksAmount = this._io.readU4le();
+            basicBlocks = new ArrayList<BasicBlock>((int) (basicBlocksAmount()));
+            for (int i = 0; i < basicBlocksAmount(); i++) {
+                this.basicBlocks.add(new BasicBlock(this._io, this, _root));
             }
         }
-        private long exploredBlocksAmount;
-        private ArrayList<BasicBlock> exploredBlock;
+        private long basicBlocksAmount;
+        private ArrayList<BasicBlock> basicBlocks;
         private Vtil _root;
         private Vtil _parent;
-        public long exploredBlocksAmount() { return exploredBlocksAmount; }
-        public ArrayList<BasicBlock> exploredBlock() { return exploredBlock; }
+        public long basicBlocksAmount() { return basicBlocksAmount; }
+        public ArrayList<BasicBlock> basicBlocks() { return basicBlocks; }
         public Vtil _root() { return _root; }
         public Vtil _parent() { return _parent; }
     }
@@ -475,6 +475,35 @@ public class Vtil extends KaitaiStruct {
         public Vtil _root() { return _root; }
         public KaitaiStruct _parent() { return _parent; }
     }
+    public static class Entrypoint extends KaitaiStruct {
+        public static Entrypoint fromFile(String fileName) throws IOException {
+            return new Entrypoint(new ByteBufferKaitaiStream(fileName));
+        }
+
+        public Entrypoint(KaitaiStream _io) {
+            this(_io, null, null);
+        }
+
+        public Entrypoint(KaitaiStream _io, Vtil _parent) {
+            this(_io, _parent, null);
+        }
+
+        public Entrypoint(KaitaiStream _io, Vtil _parent, Vtil _root) {
+            super(_io);
+            this._parent = _parent;
+            this._root = _root;
+            _read();
+        }
+        private void _read() {
+            this.entryVip = this._io.readU8le();
+        }
+        private long entryVip;
+        private Vtil _root;
+        private Vtil _parent;
+        public long entryVip() { return entryVip; }
+        public Vtil _root() { return _root; }
+        public Vtil _parent() { return _parent; }
+    }
     public static class BasicBlock extends KaitaiStruct {
         public static BasicBlock fromFile(String fileName) throws IOException {
             return new BasicBlock(new ByteBufferKaitaiStream(fileName));
@@ -540,35 +569,6 @@ public class Vtil extends KaitaiStruct {
         public Vtil _root() { return _root; }
         public Vtil.ExploredBlocks _parent() { return _parent; }
     }
-    public static class EntryPoint extends KaitaiStruct {
-        public static EntryPoint fromFile(String fileName) throws IOException {
-            return new EntryPoint(new ByteBufferKaitaiStream(fileName));
-        }
-
-        public EntryPoint(KaitaiStream _io) {
-            this(_io, null, null);
-        }
-
-        public EntryPoint(KaitaiStream _io, Vtil _parent) {
-            this(_io, _parent, null);
-        }
-
-        public EntryPoint(KaitaiStream _io, Vtil _parent, Vtil _root) {
-            super(_io);
-            this._parent = _parent;
-            this._root = _root;
-            _read();
-        }
-        private void _read() {
-            this.entryVip = this._io.readU8le();
-        }
-        private long entryVip;
-        private Vtil _root;
-        private Vtil _parent;
-        public long entryVip() { return entryVip; }
-        public Vtil _root() { return _root; }
-        public Vtil _parent() { return _parent; }
-    }
     public static class Header extends KaitaiStruct {
         public static Header fromFile(String fileName) throws IOException {
             return new Header(new ByteBufferKaitaiStream(fileName));
@@ -608,7 +608,7 @@ public class Vtil extends KaitaiStruct {
         public Vtil _parent() { return _parent; }
     }
     private Header header;
-    private EntryPoint entryPoint;
+    private Entrypoint entrypoint;
     private RoutineConvention routineConvention;
     private SubroutineConvention subroutineConvention;
     private SpecSubroutineConventions specSubroutineConventions;
@@ -616,7 +616,7 @@ public class Vtil extends KaitaiStruct {
     private Vtil _root;
     private KaitaiStruct _parent;
     public Header header() { return header; }
-    public EntryPoint entryPoint() { return entryPoint; }
+    public Entrypoint entrypoint() { return entrypoint; }
     public RoutineConvention routineConvention() { return routineConvention; }
     public SubroutineConvention subroutineConvention() { return subroutineConvention; }
     public SpecSubroutineConventions specSubroutineConventions() { return specSubroutineConventions; }

@@ -24,8 +24,8 @@ public:
     class explored_blocks_t;
     class spec_subroutine_conventions_t;
     class spec_subroutine_convention_t;
+    class entrypoint_t;
     class basic_block_t;
-    class entry_point_t;
     class header_t;
 
     enum architecture_identifier_t {
@@ -255,14 +255,14 @@ public:
         ~explored_blocks_t();
 
     private:
-        uint32_t m_explored_blocks_amount;
-        std::vector<basic_block_t*>* m_explored_block;
+        uint32_t m_basic_blocks_amount;
+        std::vector<basic_block_t*>* m_basic_blocks;
         vtil_t* m__root;
         vtil_t* m__parent;
 
     public:
-        uint32_t explored_blocks_amount() const { return m_explored_blocks_amount; }
-        std::vector<basic_block_t*>* explored_block() const { return m_explored_block; }
+        uint32_t basic_blocks_amount() const { return m_basic_blocks_amount; }
+        std::vector<basic_block_t*>* basic_blocks() const { return m_basic_blocks; }
         vtil_t* _root() const { return m__root; }
         vtil_t* _parent() const { return m__parent; }
     };
@@ -333,6 +333,29 @@ public:
         kaitai::kstruct* _parent() const { return m__parent; }
     };
 
+    class entrypoint_t : public kaitai::kstruct {
+
+    public:
+
+        entrypoint_t(kaitai::kstream* p__io, vtil_t* p__parent = 0, vtil_t* p__root = 0);
+
+    private:
+        void _read();
+
+    public:
+        ~entrypoint_t();
+
+    private:
+        uint64_t m_entry_vip;
+        vtil_t* m__root;
+        vtil_t* m__parent;
+
+    public:
+        uint64_t entry_vip() const { return m_entry_vip; }
+        vtil_t* _root() const { return m__root; }
+        vtil_t* _parent() const { return m__parent; }
+    };
+
     class basic_block_t : public kaitai::kstruct {
 
     public:
@@ -374,29 +397,6 @@ public:
         vtil_t::explored_blocks_t* _parent() const { return m__parent; }
     };
 
-    class entry_point_t : public kaitai::kstruct {
-
-    public:
-
-        entry_point_t(kaitai::kstream* p__io, vtil_t* p__parent = 0, vtil_t* p__root = 0);
-
-    private:
-        void _read();
-
-    public:
-        ~entry_point_t();
-
-    private:
-        uint64_t m_entry_vip;
-        vtil_t* m__root;
-        vtil_t* m__parent;
-
-    public:
-        uint64_t entry_vip() const { return m_entry_vip; }
-        vtil_t* _root() const { return m__root; }
-        vtil_t* _parent() const { return m__parent; }
-    };
-
     class header_t : public kaitai::kstruct {
 
     public:
@@ -428,7 +428,7 @@ public:
 
 private:
     header_t* m_header;
-    entry_point_t* m_entry_point;
+    entrypoint_t* m_entrypoint;
     routine_convention_t* m_routine_convention;
     subroutine_convention_t* m_subroutine_convention;
     spec_subroutine_conventions_t* m_spec_subroutine_conventions;
@@ -438,7 +438,7 @@ private:
 
 public:
     header_t* header() const { return m_header; }
-    entry_point_t* entry_point() const { return m_entry_point; }
+    entrypoint_t* entrypoint() const { return m_entrypoint; }
     routine_convention_t* routine_convention() const { return m_routine_convention; }
     subroutine_convention_t* subroutine_convention() const { return m_subroutine_convention; }
     spec_subroutine_conventions_t* spec_subroutine_conventions() const { return m_spec_subroutine_conventions; }

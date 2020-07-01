@@ -40,7 +40,7 @@ sub _read {
     my ($self) = @_;
 
     $self->{header} = Vtil::Header->new($self->{_io}, $self, $self->{_root});
-    $self->{entry_point} = Vtil::EntryPoint->new($self->{_io}, $self, $self->{_root});
+    $self->{entrypoint} = Vtil::Entrypoint->new($self->{_io}, $self, $self->{_root});
     $self->{routine_convention} = Vtil::RoutineConvention->new($self->{_io}, $self, $self->{_root});
     $self->{subroutine_convention} = Vtil::SubroutineConvention->new($self->{_io}, $self, $self->{_root});
     $self->{spec_subroutine_conventions} = Vtil::SpecSubroutineConventions->new($self->{_io}, $self, $self->{_root});
@@ -52,9 +52,9 @@ sub header {
     return $self->{header};
 }
 
-sub entry_point {
+sub entrypoint {
     my ($self) = @_;
-    return $self->{entry_point};
+    return $self->{entrypoint};
 }
 
 sub routine_convention {
@@ -537,22 +537,22 @@ sub new {
 sub _read {
     my ($self) = @_;
 
-    $self->{explored_blocks_amount} = $self->{_io}->read_u4le();
-    $self->{explored_block} = ();
-    my $n_explored_block = $self->explored_blocks_amount();
-    for (my $i = 0; $i < $n_explored_block; $i++) {
-        $self->{explored_block}[$i] = Vtil::BasicBlock->new($self->{_io}, $self, $self->{_root});
+    $self->{basic_blocks_amount} = $self->{_io}->read_u4le();
+    $self->{basic_blocks} = ();
+    my $n_basic_blocks = $self->basic_blocks_amount();
+    for (my $i = 0; $i < $n_basic_blocks; $i++) {
+        $self->{basic_blocks}[$i] = Vtil::BasicBlock->new($self->{_io}, $self, $self->{_root});
     }
 }
 
-sub explored_blocks_amount {
+sub basic_blocks_amount {
     my ($self) = @_;
-    return $self->{explored_blocks_amount};
+    return $self->{basic_blocks_amount};
 }
 
-sub explored_block {
+sub basic_blocks {
     my ($self) = @_;
-    return $self->{explored_block};
+    return $self->{basic_blocks};
 }
 
 ########################################################################
@@ -708,6 +708,44 @@ sub purge_stack {
 }
 
 ########################################################################
+package Vtil::Entrypoint;
+
+our @ISA = 'IO::KaitaiStruct::Struct';
+
+sub from_file {
+    my ($class, $filename) = @_;
+    my $fd;
+
+    open($fd, '<', $filename) or return undef;
+    binmode($fd);
+    return new($class, IO::KaitaiStruct::Stream->new($fd));
+}
+
+sub new {
+    my ($class, $_io, $_parent, $_root) = @_;
+    my $self = IO::KaitaiStruct::Struct->new($_io);
+
+    bless $self, $class;
+    $self->{_parent} = $_parent;
+    $self->{_root} = $_root || $self;;
+
+    $self->_read();
+
+    return $self;
+}
+
+sub _read {
+    my ($self) = @_;
+
+    $self->{entry_vip} = $self->{_io}->read_u8le();
+}
+
+sub entry_vip {
+    my ($self) = @_;
+    return $self->{entry_vip};
+}
+
+########################################################################
 package Vtil::BasicBlock;
 
 our @ISA = 'IO::KaitaiStruct::Struct';
@@ -809,44 +847,6 @@ sub next_vip_amount {
 sub next_vip {
     my ($self) = @_;
     return $self->{next_vip};
-}
-
-########################################################################
-package Vtil::EntryPoint;
-
-our @ISA = 'IO::KaitaiStruct::Struct';
-
-sub from_file {
-    my ($class, $filename) = @_;
-    my $fd;
-
-    open($fd, '<', $filename) or return undef;
-    binmode($fd);
-    return new($class, IO::KaitaiStruct::Stream->new($fd));
-}
-
-sub new {
-    my ($class, $_io, $_parent, $_root) = @_;
-    my $self = IO::KaitaiStruct::Struct->new($_io);
-
-    bless $self, $class;
-    $self->{_parent} = $_parent;
-    $self->{_root} = $_root || $self;;
-
-    $self->_read();
-
-    return $self;
-}
-
-sub _read {
-    my ($self) = @_;
-
-    $self->{entry_vip} = $self->{_io}->read_u8le();
-}
-
-sub entry_vip {
-    my ($self) = @_;
-    return $self->{entry_vip};
 }
 
 ########################################################################

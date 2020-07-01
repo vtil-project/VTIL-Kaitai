@@ -8,7 +8,7 @@ digraph {
 		vtil__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 			<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
 			<TR><TD PORT="header_pos">0</TD><TD PORT="header_size">8</TD><TD>Header</TD><TD PORT="header_type">header</TD></TR>
-			<TR><TD PORT="entry_point_pos">8</TD><TD PORT="entry_point_size">8</TD><TD>EntryPoint</TD><TD PORT="entry_point_type">entry_point</TD></TR>
+			<TR><TD PORT="entrypoint_pos">8</TD><TD PORT="entrypoint_size">8</TD><TD>Entrypoint</TD><TD PORT="entrypoint_type">entrypoint</TD></TR>
 			<TR><TD PORT="routine_convention_pos">16</TD><TD PORT="routine_convention_size">...</TD><TD>RoutineConvention</TD><TD PORT="routine_convention_type">routine_convention</TD></TR>
 			<TR><TD PORT="subroutine_convention_pos">...</TD><TD PORT="subroutine_convention_size">...</TD><TD>SubroutineConvention</TD><TD PORT="subroutine_convention_type">subroutine_convention</TD></TR>
 			<TR><TD PORT="spec_subroutine_conventions_pos">...</TD><TD PORT="spec_subroutine_conventions_size">...</TD><TD>SpecSubroutineConventions</TD><TD PORT="spec_subroutine_conventions_type">spec_subroutine_conventions</TD></TR>
@@ -114,9 +114,9 @@ operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING
 
 			explored_blocks__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
-				<TR><TD PORT="explored_blocks_amount_pos">0</TD><TD PORT="explored_blocks_amount_size">4</TD><TD>u4le</TD><TD PORT="explored_blocks_amount_type">explored_blocks_amount</TD></TR>
-				<TR><TD PORT="explored_block_pos">4</TD><TD PORT="explored_block_size">...</TD><TD>BasicBlock</TD><TD PORT="explored_block_type">explored_block</TD></TR>
-				<TR><TD COLSPAN="4" PORT="explored_block__repeat">repeat explored_blocks_amount times</TD></TR>
+				<TR><TD PORT="basic_blocks_amount_pos">0</TD><TD PORT="basic_blocks_amount_size">4</TD><TD>u4le</TD><TD PORT="basic_blocks_amount_type">basic_blocks_amount</TD></TR>
+				<TR><TD PORT="basic_blocks_pos">4</TD><TD PORT="basic_blocks_size">...</TD><TD>BasicBlock</TD><TD PORT="basic_blocks_type">basic_blocks</TD></TR>
+				<TR><TD COLSPAN="4" PORT="basic_blocks__repeat">repeat basic_blocks_amount times</TD></TR>
 			</TABLE>>];
 		}
 		subgraph cluster__spec_subroutine_conventions {
@@ -151,6 +151,15 @@ operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING
 				<TR><TD PORT="purge_stack_pos">...</TD><TD PORT="purge_stack_size">1</TD><TD>u1</TD><TD PORT="purge_stack_type">purge_stack</TD></TR>
 			</TABLE>>];
 		}
+		subgraph cluster__entrypoint {
+			label="Vtil::Entrypoint";
+			graph[style=dotted];
+
+			entrypoint__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
+				<TR><TD PORT="entry_vip_pos">0</TD><TD PORT="entry_vip_size">8</TD><TD>u8le</TD><TD PORT="entry_vip_type">entry_vip</TD></TR>
+			</TABLE>>];
+		}
 		subgraph cluster__basic_block {
 			label="Vtil::BasicBlock";
 			graph[style=dotted];
@@ -172,15 +181,6 @@ operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING
 				<TR><TD COLSPAN="4" PORT="next_vip__repeat">repeat next_vip_amount times</TD></TR>
 			</TABLE>>];
 		}
-		subgraph cluster__entry_point {
-			label="Vtil::EntryPoint";
-			graph[style=dotted];
-
-			entry_point__seq [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-				<TR><TD BGCOLOR="#E0FFE0">pos</TD><TD BGCOLOR="#E0FFE0">size</TD><TD BGCOLOR="#E0FFE0">type</TD><TD BGCOLOR="#E0FFE0">id</TD></TR>
-				<TR><TD PORT="entry_vip_pos">0</TD><TD PORT="entry_vip_size">8</TD><TD>u8le</TD><TD PORT="entry_vip_type">entry_vip</TD></TR>
-			</TABLE>>];
-		}
 		subgraph cluster__header {
 			label="Vtil::Header";
 			graph[style=dotted];
@@ -195,7 +195,7 @@ operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING
 		}
 	}
 	vtil__seq:header_type -> header__seq [style=bold];
-	vtil__seq:entry_point_type -> entry_point__seq [style=bold];
+	vtil__seq:entrypoint_type -> entrypoint__seq [style=bold];
 	vtil__seq:routine_convention_type -> routine_convention__seq [style=bold];
 	vtil__seq:subroutine_convention_type -> subroutine_convention__seq [style=bold];
 	vtil__seq:spec_subroutine_conventions_type -> spec_subroutine_conventions__seq [style=bold];
@@ -221,8 +221,8 @@ operand__seq_operand_switch [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING
 	instruction__seq:name_len_type -> instruction__seq:name_size [color="#404040"];
 	instruction__seq:operands_type -> operand__seq [style=bold];
 	instruction__seq:operands_amount_type -> instruction__seq:operands__repeat [color="#404040"];
-	explored_blocks__seq:explored_block_type -> basic_block__seq [style=bold];
-	explored_blocks__seq:explored_blocks_amount_type -> explored_blocks__seq:explored_block__repeat [color="#404040"];
+	explored_blocks__seq:basic_blocks_type -> basic_block__seq [style=bold];
+	explored_blocks__seq:basic_blocks_amount_type -> explored_blocks__seq:basic_blocks__repeat [color="#404040"];
 	spec_subroutine_conventions__seq:spec_subroutine_convention_type -> subroutine_convention__seq [style=bold];
 	spec_subroutine_conventions__seq:spec_subroutine_conventions_amount_type -> spec_subroutine_conventions__seq:spec_subroutine_convention__repeat [color="#404040"];
 	spec_subroutine_convention__seq:volatile_registers_type -> register_desc__seq [style=bold];

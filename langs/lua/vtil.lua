@@ -24,7 +24,7 @@ end
 
 function Vtil:_read()
   self.header = Vtil.Header(self._io, self, self._root)
-  self.entry_point = Vtil.EntryPoint(self._io, self, self._root)
+  self.entrypoint = Vtil.Entrypoint(self._io, self, self._root)
   self.routine_convention = Vtil.RoutineConvention(self._io, self, self._root)
   self.subroutine_convention = Vtil.SubroutineConvention(self._io, self, self._root)
   self.spec_subroutine_conventions = Vtil.SpecSubroutineConventions(self._io, self, self._root)
@@ -180,10 +180,10 @@ function Vtil.ExploredBlocks:_init(io, parent, root)
 end
 
 function Vtil.ExploredBlocks:_read()
-  self.explored_blocks_amount = self._io:read_u4le()
-  self.explored_block = {}
-  for i = 1, self.explored_blocks_amount do
-    self.explored_block[i] = Vtil.BasicBlock(self._io, self, self._root)
+  self.basic_blocks_amount = self._io:read_u4le()
+  self.basic_blocks = {}
+  for i = 1, self.basic_blocks_amount do
+    self.basic_blocks[i] = Vtil.BasicBlock(self._io, self, self._root)
   end
 end
 
@@ -238,6 +238,20 @@ function Vtil.SpecSubroutineConvention:_read()
 end
 
 
+Vtil.Entrypoint = class.class(KaitaiStruct)
+
+function Vtil.Entrypoint:_init(io, parent, root)
+  KaitaiStruct._init(self, io)
+  self._parent = parent
+  self._root = root or self
+  self:_read()
+end
+
+function Vtil.Entrypoint:_read()
+  self.entry_vip = self._io:read_u8le()
+end
+
+
 Vtil.BasicBlock = class.class(KaitaiStruct)
 
 function Vtil.BasicBlock:_init(io, parent, root)
@@ -267,20 +281,6 @@ function Vtil.BasicBlock:_read()
   for i = 1, self.next_vip_amount do
     self.next_vip[i] = self._io:read_u8le()
   end
-end
-
-
-Vtil.EntryPoint = class.class(KaitaiStruct)
-
-function Vtil.EntryPoint:_init(io, parent, root)
-  KaitaiStruct._init(self, io)
-  self._parent = parent
-  self._root = root or self
-  self:_read()
-end
-
-function Vtil.EntryPoint:_read()
-  self.entry_vip = self._io:read_u8le()
 end
 
 

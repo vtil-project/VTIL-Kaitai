@@ -12,7 +12,7 @@ vtil_t::vtil_t(kaitai::kstream* p__io, kaitai::kstruct* p__parent, vtil_t* p__ro
 
 void vtil_t::_read() {
     m_header = new header_t(m__io, this, m__root);
-    m_entry_point = new entry_point_t(m__io, this, m__root);
+    m_entrypoint = new entrypoint_t(m__io, this, m__root);
     m_routine_convention = new routine_convention_t(m__io, this, m__root);
     m_subroutine_convention = new subroutine_convention_t(m__io, this, m__root);
     m_spec_subroutine_conventions = new spec_subroutine_conventions_t(m__io, this, m__root);
@@ -21,7 +21,7 @@ void vtil_t::_read() {
 
 vtil_t::~vtil_t() {
     delete m_header;
-    delete m_entry_point;
+    delete m_entrypoint;
     delete m_routine_convention;
     delete m_subroutine_convention;
     delete m_spec_subroutine_conventions;
@@ -221,20 +221,20 @@ vtil_t::explored_blocks_t::explored_blocks_t(kaitai::kstream* p__io, vtil_t* p__
 }
 
 void vtil_t::explored_blocks_t::_read() {
-    m_explored_blocks_amount = m__io->read_u4le();
-    int l_explored_block = explored_blocks_amount();
-    m_explored_block = new std::vector<basic_block_t*>();
-    m_explored_block->reserve(l_explored_block);
-    for (int i = 0; i < l_explored_block; i++) {
-        m_explored_block->push_back(new basic_block_t(m__io, this, m__root));
+    m_basic_blocks_amount = m__io->read_u4le();
+    int l_basic_blocks = basic_blocks_amount();
+    m_basic_blocks = new std::vector<basic_block_t*>();
+    m_basic_blocks->reserve(l_basic_blocks);
+    for (int i = 0; i < l_basic_blocks; i++) {
+        m_basic_blocks->push_back(new basic_block_t(m__io, this, m__root));
     }
 }
 
 vtil_t::explored_blocks_t::~explored_blocks_t() {
-    for (std::vector<basic_block_t*>::iterator it = m_explored_block->begin(); it != m_explored_block->end(); ++it) {
+    for (std::vector<basic_block_t*>::iterator it = m_basic_blocks->begin(); it != m_basic_blocks->end(); ++it) {
         delete *it;
     }
-    delete m_explored_block;
+    delete m_basic_blocks;
 }
 
 vtil_t::spec_subroutine_conventions_t::spec_subroutine_conventions_t(kaitai::kstream* p__io, vtil_t* p__parent, vtil_t* p__root) : kaitai::kstruct(p__io) {
@@ -310,6 +310,19 @@ vtil_t::spec_subroutine_convention_t::~spec_subroutine_convention_t() {
     delete m_frame_register;
 }
 
+vtil_t::entrypoint_t::entrypoint_t(kaitai::kstream* p__io, vtil_t* p__parent, vtil_t* p__root) : kaitai::kstruct(p__io) {
+    m__parent = p__parent;
+    m__root = p__root;
+    _read();
+}
+
+void vtil_t::entrypoint_t::_read() {
+    m_entry_vip = m__io->read_u8le();
+}
+
+vtil_t::entrypoint_t::~entrypoint_t() {
+}
+
 vtil_t::basic_block_t::basic_block_t(kaitai::kstream* p__io, vtil_t::explored_blocks_t* p__parent, vtil_t* p__root) : kaitai::kstruct(p__io) {
     m__parent = p__parent;
     m__root = p__root;
@@ -351,19 +364,6 @@ vtil_t::basic_block_t::~basic_block_t() {
     delete m_instructions;
     delete m_prev_vip;
     delete m_next_vip;
-}
-
-vtil_t::entry_point_t::entry_point_t(kaitai::kstream* p__io, vtil_t* p__parent, vtil_t* p__root) : kaitai::kstruct(p__io) {
-    m__parent = p__parent;
-    m__root = p__root;
-    _read();
-}
-
-void vtil_t::entry_point_t::_read() {
-    m_entry_vip = m__io->read_u8le();
-}
-
-vtil_t::entry_point_t::~entry_point_t() {
 }
 
 vtil_t::header_t::header_t(kaitai::kstream* p__io, vtil_t* p__parent, vtil_t* p__root) : kaitai::kstruct(p__io) {

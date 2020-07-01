@@ -10,8 +10,8 @@ enums:
 seq:
   - id: header
     type: header
-  - id: entry_point
-    type: entry_point
+  - id: entrypoint
+    type: entrypoint
   - id: routine_convention
     type: routine_convention
   - id: subroutine_convention
@@ -136,7 +136,7 @@ types:
         type: u1
       - id: magic2
         type: u2
-  entry_point:
+  entrypoint:
     seq:
       - id: entry_vip
         type: u8
@@ -202,9 +202,9 @@ types:
         repeat-expr: spec_subroutine_conventions_amount
   explored_blocks:
     seq:
-      - id: explored_blocks_amount
+      - id: basic_blocks_amount
         type: u4
-      - id: explored_block
+      - id: basic_blocks
         type: basic_block
         repeat: expr
-        repeat-expr: explored_blocks_amount
+        repeat-expr: basic_blocks_amount

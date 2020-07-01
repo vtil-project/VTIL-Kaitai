@@ -27,7 +27,7 @@ namespace Kaitai
         private void _read()
         {
             _header = new Header(m_io, this, m_root);
-            _entryPoint = new EntryPoint(m_io, this, m_root);
+            _entrypoint = new Entrypoint(m_io, this, m_root);
             _routineConvention = new RoutineConvention(m_io, this, m_root);
             _subroutineConvention = new SubroutineConvention(m_io, this, m_root);
             _specSubroutineConventions = new SpecSubroutineConventions(m_io, this, m_root);
@@ -313,19 +313,19 @@ namespace Kaitai
             }
             private void _read()
             {
-                _exploredBlocksAmount = m_io.ReadU4le();
-                _exploredBlock = new List<BasicBlock>((int) (ExploredBlocksAmount));
-                for (var i = 0; i < ExploredBlocksAmount; i++)
+                _basicBlocksAmount = m_io.ReadU4le();
+                _basicBlocks = new List<BasicBlock>((int) (BasicBlocksAmount));
+                for (var i = 0; i < BasicBlocksAmount; i++)
                 {
-                    _exploredBlock.Add(new BasicBlock(m_io, this, m_root));
+                    _basicBlocks.Add(new BasicBlock(m_io, this, m_root));
                 }
             }
-            private uint _exploredBlocksAmount;
-            private List<BasicBlock> _exploredBlock;
+            private uint _basicBlocksAmount;
+            private List<BasicBlock> _basicBlocks;
             private Vtil m_root;
             private Vtil m_parent;
-            public uint ExploredBlocksAmount { get { return _exploredBlocksAmount; } }
-            public List<BasicBlock> ExploredBlock { get { return _exploredBlock; } }
+            public uint BasicBlocksAmount { get { return _basicBlocksAmount; } }
+            public List<BasicBlock> BasicBlocks { get { return _basicBlocks; } }
             public Vtil M_Root { get { return m_root; } }
             public Vtil M_Parent { get { return m_parent; } }
         }
@@ -423,6 +423,30 @@ namespace Kaitai
             public Vtil M_Root { get { return m_root; } }
             public KaitaiStruct M_Parent { get { return m_parent; } }
         }
+        public partial class Entrypoint : KaitaiStruct
+        {
+            public static Entrypoint FromFile(string fileName)
+            {
+                return new Entrypoint(new KaitaiStream(fileName));
+            }
+
+            public Entrypoint(KaitaiStream p__io, Vtil p__parent = null, Vtil p__root = null) : base(p__io)
+            {
+                m_parent = p__parent;
+                m_root = p__root;
+                _read();
+            }
+            private void _read()
+            {
+                _entryVip = m_io.ReadU8le();
+            }
+            private ulong _entryVip;
+            private Vtil m_root;
+            private Vtil m_parent;
+            public ulong EntryVip { get { return _entryVip; } }
+            public Vtil M_Root { get { return m_root; } }
+            public Vtil M_Parent { get { return m_parent; } }
+        }
         public partial class BasicBlock : KaitaiStruct
         {
             public static BasicBlock FromFile(string fileName)
@@ -486,30 +510,6 @@ namespace Kaitai
             public Vtil M_Root { get { return m_root; } }
             public Vtil.ExploredBlocks M_Parent { get { return m_parent; } }
         }
-        public partial class EntryPoint : KaitaiStruct
-        {
-            public static EntryPoint FromFile(string fileName)
-            {
-                return new EntryPoint(new KaitaiStream(fileName));
-            }
-
-            public EntryPoint(KaitaiStream p__io, Vtil p__parent = null, Vtil p__root = null) : base(p__io)
-            {
-                m_parent = p__parent;
-                m_root = p__root;
-                _read();
-            }
-            private void _read()
-            {
-                _entryVip = m_io.ReadU8le();
-            }
-            private ulong _entryVip;
-            private Vtil m_root;
-            private Vtil m_parent;
-            public ulong EntryVip { get { return _entryVip; } }
-            public Vtil M_Root { get { return m_root; } }
-            public Vtil M_Parent { get { return m_parent; } }
-        }
         public partial class Header : KaitaiStruct
         {
             public static Header FromFile(string fileName)
@@ -544,7 +544,7 @@ namespace Kaitai
             public Vtil M_Parent { get { return m_parent; } }
         }
         private Header _header;
-        private EntryPoint _entryPoint;
+        private Entrypoint _entrypoint;
         private RoutineConvention _routineConvention;
         private SubroutineConvention _subroutineConvention;
         private SpecSubroutineConventions _specSubroutineConventions;
@@ -552,7 +552,7 @@ namespace Kaitai
         private Vtil m_root;
         private KaitaiStruct m_parent;
         public Header Header { get { return _header; } }
-        public EntryPoint EntryPoint { get { return _entryPoint; } }
+        public Entrypoint Entrypoint { get { return _entrypoint; } }
         public RoutineConvention RoutineConvention { get { return _routineConvention; } }
         public SubroutineConvention SubroutineConvention { get { return _subroutineConvention; } }
         public SpecSubroutineConventions SpecSubroutineConventions { get { return _specSubroutineConventions; } }

@@ -21,7 +21,7 @@ class Vtil < Kaitai::Struct::Struct
 
   def _read
     @header = Header.new(@_io, self, @_root)
-    @entry_point = EntryPoint.new(@_io, self, @_root)
+    @entrypoint = Entrypoint.new(@_io, self, @_root)
     @routine_convention = RoutineConvention.new(@_io, self, @_root)
     @subroutine_convention = SubroutineConvention.new(@_io, self, @_root)
     @spec_subroutine_conventions = SpecSubroutineConventions.new(@_io, self, @_root)
@@ -189,15 +189,15 @@ class Vtil < Kaitai::Struct::Struct
     end
 
     def _read
-      @explored_blocks_amount = @_io.read_u4le
-      @explored_block = Array.new(explored_blocks_amount)
-      (explored_blocks_amount).times { |i|
-        @explored_block[i] = BasicBlock.new(@_io, self, @_root)
+      @basic_blocks_amount = @_io.read_u4le
+      @basic_blocks = Array.new(basic_blocks_amount)
+      (basic_blocks_amount).times { |i|
+        @basic_blocks[i] = BasicBlock.new(@_io, self, @_root)
       }
       self
     end
-    attr_reader :explored_blocks_amount
-    attr_reader :explored_block
+    attr_reader :basic_blocks_amount
+    attr_reader :basic_blocks
   end
   class SpecSubroutineConventions < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
@@ -255,6 +255,18 @@ class Vtil < Kaitai::Struct::Struct
     attr_reader :shadow_space
     attr_reader :purge_stack
   end
+  class Entrypoint < Kaitai::Struct::Struct
+    def initialize(_io, _parent = nil, _root = self)
+      super(_io, _parent, _root)
+      _read
+    end
+
+    def _read
+      @entry_vip = @_io.read_u8le
+      self
+    end
+    attr_reader :entry_vip
+  end
   class BasicBlock < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
       super(_io, _parent, _root)
@@ -294,18 +306,6 @@ class Vtil < Kaitai::Struct::Struct
     attr_reader :next_vip_amount
     attr_reader :next_vip
   end
-  class EntryPoint < Kaitai::Struct::Struct
-    def initialize(_io, _parent = nil, _root = self)
-      super(_io, _parent, _root)
-      _read
-    end
-
-    def _read
-      @entry_vip = @_io.read_u8le
-      self
-    end
-    attr_reader :entry_vip
-  end
   class Header < Kaitai::Struct::Struct
     def initialize(_io, _parent = nil, _root = self)
       super(_io, _parent, _root)
@@ -325,7 +325,7 @@ class Vtil < Kaitai::Struct::Struct
     attr_reader :magic2
   end
   attr_reader :header
-  attr_reader :entry_point
+  attr_reader :entrypoint
   attr_reader :routine_convention
   attr_reader :subroutine_convention
   attr_reader :spec_subroutine_conventions
